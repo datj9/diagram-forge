@@ -1,0 +1,15 @@
+{
+  "name": "diagram-forge",
+  "version": "0.1.0",
+  "private": false,
+  "type": "module",
+  "description": "A deterministic, polished diagram compiler for many visual types.",
+  "bin": { "diagram-forge": "./bin/diagram-forge.mjs" },
+  "scripts": {
+    "test": "node --test",
+    "render:demo": "node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.html --theme midnight",
+    "check": "node bin/diagram-forge.mjs check examples/product-architecture.json"
+  },
+  "license": "MIT",
+  "engines": { "node": ">=20" }
+}

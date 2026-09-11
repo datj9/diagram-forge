@@ -1,0 +1,11 @@
+{
+  "type": "roadmap",
+  "title": "Diagram Forge launch path",
+  "subtitle": "A shared model gains broader output formats without losing correctness",
+  "items": [
+    { "label": "Canonical model", "detail": "Now — nodes, edges, visual semantics", "value": 1 },
+    { "label": "Importers", "detail": "Mermaid, draw.io, Excalidraw", "value": 2 },
+    { "label": "Style packs", "detail": "Editorial, technical, executive", "value": 3 },
+    { "label": "Visual proof", "detail": "Browser QA and export receipts", "value": 4 }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "type": "architecture",
+  "title": "Checkout platform",
+  "subtitle": "An evidence-friendly system view with a presentation-grade finish",
+  "nodes": [
+    { "id": "web", "label": "Web app", "group": "Experience" },
+    { "id": "mobile", "label": "Mobile app", "group": "Experience" },
+    { "id": "api", "label": "Checkout API", "group": "Platform" },
+    { "id": "risk", "label": "Risk service", "group": "Platform" },
+    { "id": "orders", "label": "Orders DB", "group": "Data" },
+    { "id": "events", "label": "Event stream", "group": "Data" }
+  ],
+  "edges": [
+    { "from": "web", "to": "api", "label": "HTTPS" },
+    { "from": "mobile", "to": "api", "label": "HTTPS" },
+    { "from": "api", "to": "risk", "label": "score" },
+    { "from": "api", "to": "orders", "label": "write" },
+    { "from": "api", "to": "events", "label": "publish" }
+  ]
+}
