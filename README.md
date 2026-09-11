@@ -1,11 +1,17 @@
 # Diagram Forge
 
-**A deterministic compiler for diagrams that are both technically trustworthy and
-presentation-ready.**
+**Validated JSON in. Presentation-ready SVG out. Nothing else.**
 
-Diagram Forge takes a small JSON model and emits one self-contained HTML file
-with inline SVG. It deliberately combines two ideas: a broad visual vocabulary
-and a validation-first renderer pipeline.
+Diagram Forge compiles a small JSON model into a single self-contained HTML file
+(or raw SVG). It has no dependencies, no network calls, and produces
+byte-identical output for identical input — so diagrams live in git and run in CI
+like any other build artifact. It is deliberately small (~130 lines): one graph
+renderer for boxes-and-arrows shapes and one editorial renderer for timelines,
+matrices, and bars, dressed by four themes.
+
+It is **not** a Mermaid replacement, not an auto-layout research project, and
+does no automatic layout for arbitrary graphs — it lays out grouped columns. What
+it does, it does predictably.
 
 ## See it in action
 
@@ -15,7 +21,7 @@ and a validation-first renderer pipeline.
   </a>
 </p>
 
-<p align="center"><strong>Architecture</strong> · grouped components, semantic connections, and a presentation-ready dark theme</p>
+<p align="center"><strong>Architecture</strong> · grouped components, semantic connections, and the <code>midnight</code> theme</p>
 
 <p align="center">
   <a href="docs/gallery/launch-roadmap.svg">
@@ -23,27 +29,51 @@ and a validation-first renderer pipeline.
   </a>
 </p>
 
-<p align="center"><strong>Roadmap</strong> · the same compiler switching to an editorial visual family</p>
+<p align="center"><strong>Roadmap</strong> · the same compiler in the <code>ocean</code> editorial family</p>
 
 ## What works today
 
-- 12 routed types: `architecture`, `dataflow`, `workflow`, `sequence`,
-  `lifecycle`, `timeline`, `roadmap`, `hierarchy`, `journey`, `comparison`,
-  `matrix`, and `chart`.
-- Four polished themes: `paper`, `midnight`, `ocean`, and `ember`.
-- Deterministic layouts, SVG output, keyboard-friendly accessible labels, and
-  no runtime dependency or network request.
-- Structural checks for duplicate IDs, orphan edges, unsupported types, empty
-  labels, and insufficient graph data.
+**12 model types across two layout engines:**
+
+- **Graph** (7): `architecture`, `dataflow`, `workflow`, `sequence`,
+  `lifecycle`, `hierarchy`, `journey` — grouped nodes, curved connectors, arrows.
+- **Editorial** (5): `timeline`, `roadmap`, `comparison`, `matrix`, `chart` —
+  timeline dots, matrix cards, or horizontal value bars.
+
+**Four themes** tuned for slides and docs, light and dark: `paper`, `midnight`,
+`ocean`, `ember`.
+
+**Validated before render.** Unknown types, missing titles, duplicate node ids,
+edges pointing at unknown nodes, and empty datasets fail loudly with a message —
+not a blank canvas:
+
+```bash
+$ node bin/diagram-forge.mjs check broken.json
+✗ Duplicate node id "api".
+✗ Edge web → cache references an unknown node.
+
+$ node bin/diagram-forge.mjs check examples/product-architecture.json
+✓ architecture: Checkout platform is structurally valid
+```
+
+**Static, accessible SVG:** `role="img"` with linked `<title>` and `<desc>`. No
+scripts, no animation, no runtime dependency, no network request.
 
 ## Try it
 
 ```bash
-npm test
-node bin/diagram-forge.mjs check examples/product-architecture.json
+# render an example to a self-contained HTML file, then open it
 node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.html --theme midnight
-node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.svg --theme midnight
 open dist/product-architecture.html
+
+# or emit raw SVG
+node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.svg --theme midnight
+
+# validate without rendering
+node bin/diagram-forge.mjs check examples/product-architecture.json
+
+# run the test suite
+npm test
 ```
 
 ## The model
@@ -61,31 +91,36 @@ open dist/product-architecture.html
 }
 ```
 
-The canonical `nodes` / `edges` model is shared by graph-oriented types.
-Editorial types use `items`, `series`, or `rows` as appropriate. See
-[`examples/`](examples).
+Graph types share the canonical `nodes` / `edges` model. Editorial types use
+`items`, `series`, or `rows` instead. See [`examples/`](examples).
 
 ## Product architecture
 
 ```text
-intent or import → canonical JSON → validate → type router → SVG renderer
-                                                           ↓
-                                             self-contained presentable HTML
+JSON model → validate → type router → graph | editorial renderer → SVG
+                                                                    ↓
+                                            self-contained, presentable HTML
 ```
 
-The important boundary is intentional: content semantics stay in the model;
-visual treatment lives in themes and renderers. That lets a future agent
-translate Mermaid/draw.io/Excalidraw into the model without inheriting their
-layout or styling.
+The boundary is intentional: content semantics stay in the model; visual
+treatment lives in themes and renderers. The model is designed so a future
+importer *could* target it — translating Mermaid or draw.io into the model
+without inheriting their layout or styling.
 
-## Roadmap
+## Not built yet
 
-1. Add importers for Mermaid, draw.io, and Excalidraw.
-2. Add an automatic type recommender and JSON schema files.
-3. Add view modes, PNG/PDF export, and browser visual regression checks.
-4. Add authored style packs and a plugin API for new visual types.
+These are on the roadmap, deliberately kept out of the feature list above:
+
+- [ ] Importers for Mermaid, draw.io, and Excalidraw.
+- [ ] Automatic type recommender and JSON schema files.
+- [ ] View modes, PNG/PDF export, and browser visual regression checks.
+- [ ] Authored style packs and a plugin API for new visual types.
+
+## Requirements
+
+Node >= 20. Zero runtime dependencies. MIT licensed.
 
 ## License and provenance
 
-MIT. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the related
-open-source projects that informed the product direction.
+MIT. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the open-source
+projects that informed the product direction.
