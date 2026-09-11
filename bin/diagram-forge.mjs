@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
-import { document, supportedTypes, validate } from '../lib/forge.mjs';
+import { document, render, supportedTypes, validate } from '../lib/forge.mjs';
 
 const [command, input, output, ...flags] = process.argv.slice(2);
-const usage = `Diagram Forge\n\n  diagram-forge check <model.json>\n  diagram-forge render <model.json> <output.html> [--theme paper|midnight|ocean|ember]\n  diagram-forge types`;
+const usage = `Diagram Forge\n\n  diagram-forge check <model.json>\n  diagram-forge render <model.json> <output.html|output.svg> [--theme paper|midnight|ocean|ember]\n  diagram-forge types`;
 
 if (command === 'types') { console.log(supportedTypes().join('\n')); process.exit(0); }
 if (!['check', 'render'].includes(command) || !input || (command === 'render' && !output)) { console.error(usage); process.exit(1); }
@@ -16,5 +16,8 @@ if (command === 'check') { console.log(`✓ ${model.type}: ${model.title} is str
 const themeIndex = flags.indexOf('--theme');
 const theme = themeIndex >= 0 ? flags[themeIndex + 1] : 'paper';
 await mkdir(dirname(output), { recursive: true });
-await writeFile(output, document(model, { theme }));
+const artifact = output.toLowerCase().endsWith('.svg')
+  ? render(model, { theme })
+  : document(model, { theme });
+await writeFile(output, artifact);
 console.log(`✓ Wrote ${output} (${model.type}, ${theme})`);

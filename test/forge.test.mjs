@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { document, render, supportedTypes, validate } from '../lib/forge.mjs';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const architecture = { type: 'architecture', title: 'Test system', nodes: [{ id: 'a', label: 'App' }, { id: 'b', label: 'API' }], edges: [{ from: 'a', to: 'b', label: 'calls' }] };
 
@@ -21,4 +25,10 @@ test('renders every advertised type', () => {
       : { type, title: type, nodes: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }], edges: [{ from: 'a', to: 'b' }] };
     assert.match(render(model), new RegExp(type));
   }
+});
+test('CLI writes native SVG output when requested', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'diagram-forge-'));
+  const output = join(directory, 'demo.svg');
+  execFileSync(process.execPath, ['bin/diagram-forge.mjs', 'render', 'examples/product-architecture.json', output, '--theme', 'ocean']);
+  assert.match(readFileSync(output, 'utf8'), /^<svg/);
 });

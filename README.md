@@ -7,6 +7,24 @@ Diagram Forge takes a small JSON model and emits one self-contained HTML file
 with inline SVG. It deliberately combines two ideas: a broad visual vocabulary
 and a validation-first renderer pipeline.
 
+## See it in action
+
+<p align="center">
+  <a href="docs/gallery/product-architecture.svg">
+    <img src="docs/gallery/product-architecture.svg" alt="A midnight architecture diagram for a checkout platform" width="100%">
+  </a>
+</p>
+
+<p align="center"><strong>Architecture</strong> · grouped components, semantic connections, and a presentation-ready dark theme</p>
+
+<p align="center">
+  <a href="docs/gallery/launch-roadmap.svg">
+    <img src="docs/gallery/launch-roadmap.svg" alt="An ocean-themed roadmap for Diagram Forge" width="100%">
+  </a>
+</p>
+
+<p align="center"><strong>Roadmap</strong> · the same compiler switching to an editorial visual family</p>
+
 ## What works today
 
 - 12 routed types: `architecture`, `dataflow`, `workflow`, `sequence`,
@@ -24,6 +42,7 @@ and a validation-first renderer pipeline.
 npm test
 node bin/diagram-forge.mjs check examples/product-architecture.json
 node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.html --theme midnight
+node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.svg --theme midnight
 open dist/product-architecture.html
 ```
 
