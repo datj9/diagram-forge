@@ -122,5 +122,10 @@ Node >= 20. Zero runtime dependencies. MIT licensed.
 
 ## License and provenance
 
+Diagram Forge was built after acquiring copies of and studying the MIT-licensed
+[Diagram Design](https://github.com/cathrynlavery/diagram-design) and
+[Archify](https://github.com/tt-a1i/archify) projects. They informed its product
+direction; this repository is an original implementation.
+
 MIT. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the open-source
 projects that informed the product direction.
