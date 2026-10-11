@@ -10,7 +10,7 @@
     },
     {
       "id": "b",
-      "label": "Owner's queue",
+      "label": "Owner's queue a < b",
       "group": "Settle"
     },
     {
