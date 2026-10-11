@@ -9,12 +9,12 @@
     },
     {
       "label": "Owner's api",
-      "value": 40,
-      "detail": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      "value": 40
     },
     {
       "label": "R&D",
-      "value": 1e+308
+      "value": 1e+308,
+      "detail": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
     },
     {
       "label": "Cache",
