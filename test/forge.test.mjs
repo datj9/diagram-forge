@@ -222,3 +222,8 @@ test('CLI writes native SVG output when requested', () => {
   execFileSync(process.execPath, ['bin/diagram-forge.mjs', 'render', 'examples/product-architecture.json', output, '--theme', 'ocean']);
   assert.match(readFileSync(output, 'utf8'), /^<svg/);
 });
+
+test('huge chart values scale to finite bar widths', () => {
+  const svg = render({ type: 'chart', title: 'Big', items: [{ label: 'A', value: 1e308 }, { label: 'B', value: 1e308 }] });
+  assert.doesNotMatch(svg, /Infinity|NaN/);
+});
