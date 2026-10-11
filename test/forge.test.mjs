@@ -28,14 +28,15 @@ const GRAPH_TYPES = supportedTypes().filter(type => !EDITORIAL.includes(type));
 const normalise = (svg, type) => svg.replace(/df-[a-z0-9]+/g, 'df-ID').replaceAll(`${type} diagram`, 'TYPE diagram');
 const renderAlias = (type, body) => normalise(render({ type, title: 'Same', ...body }), type);
 
-test('alias types render the same output', () => {
-  const graphBody = { nodes: [{ id: 'a', label: 'Alpha' }, { id: 'b', label: 'Beta' }], edges: [{ from: 'a', to: 'b' }] };
+const graphBody = { nodes: [{ id: 'a', label: 'Alpha' }, { id: 'b', label: 'Beta' }], edges: [{ from: 'a', to: 'b' }] };
+const itemsBody = { items: [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }] };
+
+test('all graph alias types render the same output', () => {
   const graphSvgs = GRAPH_TYPES.map(type => renderAlias(type, graphBody));
   for (const svg of graphSvgs) assert.equal(svg, graphSvgs[0]);
-  const itemsBody = { items: [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }] };
-  assert.equal(renderAlias('timeline', itemsBody), renderAlias('roadmap', itemsBody));
-  assert.equal(renderAlias('comparison', itemsBody), renderAlias('chart', itemsBody));
 });
+test('timeline and roadmap render the same output', () => assert.equal(renderAlias('timeline', itemsBody), renderAlias('roadmap', itemsBody)));
+test('comparison and chart render the same output', () => assert.equal(renderAlias('comparison', itemsBody), renderAlias('chart', itemsBody)));
 
 test('rows grow to fit their tallest group so cards never overlap the next row', () => {
   const nodes = [
