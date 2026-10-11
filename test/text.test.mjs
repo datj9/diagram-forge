@@ -51,3 +51,33 @@ test('wrapLines wraps CJK text by code point using double weight', () => {
 });
 
 test('wrapLines returns one empty line for whitespace wider than the line', () => assert.deepEqual(wrapLines(' '.repeat(300), 100, 8.3), { lines: [''], truncated: false }));
+
+const FAMILY = '\u{1F468}‍\u{1F469}‍\u{1F467}';
+const splitCleanly = (text, maxPx) => wrapLines(text, maxPx, 10, 100).lines;
+
+test('hard breaks never split a ZWJ family emoji', () => {
+  const lines = splitCleanly(FAMILY.repeat(12), 100);
+  assert.ok(lines.length > 1);
+  for (const line of lines) {
+    assert.ok(!line.startsWith('‍') && !line.endsWith('‍'), JSON.stringify(line));
+    assert.match(line, new RegExp(`^(?:${FAMILY})+$`, 'u'));
+  }
+});
+
+test('hard breaks never start a line with a combining mark', () => {
+  const lines = splitCleanly('é'.repeat(20), 70);
+  assert.ok(lines.length > 1);
+  for (const line of lines) assert.match(line, /^(?:é)+$/u);
+});
+
+test('hard breaks never split a flag', () => {
+  const lines = splitCleanly('\u{1F1FA}\u{1F1F8}'.repeat(20), 90);
+  assert.ok(lines.length > 1);
+  for (const line of lines) assert.match(line, /^(?:\u{1F1FA}\u{1F1F8})+$/u);
+});
+
+test('the ellipsis trim never leaves half a cluster', () => {
+  const { lines, truncated } = wrapLines(FAMILY.repeat(30), 100, 10, 2);
+  assert.equal(truncated, true);
+  assert.match(lines[1], new RegExp(`^(?:${FAMILY})*…$`, 'u'));
+});
