@@ -42,7 +42,8 @@
     },
     {
       "label": "Reports",
-      "value": 52
+      "value": 1e+308,
+      "detail": "yyyyyyyyyyyyyyyyyyyy"
     }
   ]
 }
