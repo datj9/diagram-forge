@@ -141,6 +141,13 @@ These are on the roadmap, deliberately kept out of the feature list above:
 
 Node >= 20. Zero runtime dependencies. MIT licensed.
 
+## Contributing
+
+`npm test` compares every render byte-for-byte against `test/golden/`. After an
+intentional output change, run `npm run test:update-golden`, review the diff, and
+regenerate the two gallery SVGs. A CI workflow draft lives in `docs/ci/test.yml`;
+copy it to `.github/workflows/test.yml` to enable it.
+
 ## License and provenance
 
 Diagram Forge is inspired by the MIT-licensed
