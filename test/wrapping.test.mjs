@@ -146,6 +146,12 @@ test('a long chart label wraps within 186px and grows the row pitch', () => {
   assert.equal(barTop(svg, 1) - barTop(svg, 0), 29 + 2 * 18);
 });
 
+test('chart label room is 186px: a 25-char label (193.75px) wraps but would fit at 200', () => {
+  const svg = chartSvg([{ label: 'abcdefghijkl mnopqrstuvwx', value: 10 }, { label: 'B', value: 5 }]);
+  assert.equal(findBlock(svg, 'abcdefghijkl').lines.length, 2);
+  assert.equal(findBlock(chartSvg([{ label: 'abcdefghijkl mnopqrstuv', value: 10 }, { label: 'B', value: 5 }]), 'abcdefghijkl').lines.length, 1);
+});
+
 test('roadmap labels and details wrap inside the 892px column', () => {
   const svg = render({ type: 'roadmap', title: 'Plan', items: [{ label: 'Platform reliability, observability and incident response programme for every regional business unit and partner', detail: 'stabilise and measure '.repeat(10).trim() }, { label: 'Next', detail: 'Later' }] });
   const [labelBlock, detailBlock] = textBlocks(svg).filter(block => block.size === 16 || block.size === 13).slice(0, 2);
