@@ -49,3 +49,5 @@ test('wrapLines wraps CJK text by code point using double weight', () => {
   const { lines } = wrapLines('漢字漢字漢字', 8 * 10, 10);
   assert.deepEqual(lines, ['漢字漢字', '漢字']);
 });
+
+test('wrapLines returns one empty line for whitespace wider than the line', () => assert.deepEqual(wrapLines(' '.repeat(300), 100, 8.3), { lines: [''], truncated: false }));

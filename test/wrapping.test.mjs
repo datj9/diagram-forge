@@ -180,3 +180,16 @@ test('a chart detail beside a short bar is clamped to the room right of the bar'
   assert.equal(line.x, 315 + 350);
   assert.equal(textLengthOf(line), 3 * 7.2);
 });
+
+test('a whitespace-only subtitle does not shift the content', () => {
+  const nodes = [{ id: 'a', label: 'A', group: 'One' }, { id: 'b', label: 'B', group: 'Two' }];
+  const blank = render({ type: 'architecture', title: 'T', subtitle: ' '.repeat(300), nodes });
+  assert.equal(cardRects(blank)[0].y, 205);
+  assert.equal(cardRects(render({ type: 'architecture', title: 'T', subtitle: 'short', nodes }))[0].y, 205);
+});
+
+test('a whitespace-only roadmap detail keeps the normal row pitch', () => {
+  const svg = render({ type: 'roadmap', title: 'Plan', items: [{ label: 'One', detail: ' '.repeat(300) }, { label: 'Two', detail: 'Later' }] });
+  const [first, second] = [...svg.matchAll(/<circle cx="126" cy="([\d.]+)"/g)].map(match => Number(match[1]));
+  assert.equal(second - first, 47);
+});
