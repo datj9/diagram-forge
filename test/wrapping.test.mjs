@@ -69,6 +69,14 @@ test('a label longer than three lines is truncated with an ellipsis and a full-t
   assert.equal(cardRects(svg)[0].h, 94);
 });
 
+test('the full-text title of a truncated card is escaped', () => {
+  const label = `R&D <b>"quoted"</b> it's ${'padding words '.repeat(12)}`.trim();
+  const svg = render(graphModel([{ id: 'a', label, group: 'One' }, { id: 'b', label: 'B', group: 'Two' }]));
+  const title = svg.match(/<g><title>([^]*?)<\/title>/)[1];
+  assert.doesNotMatch(title, /[<>"']/);
+  assert.ok(title.startsWith('R&amp;D &lt;b&gt;&quot;quoted&quot;&lt;/b&gt; it&#39;s padding words'));
+});
+
 test('cards carry no <title> unless their label was truncated', () => {
   const svg = render(graphModel([{ id: 'a', label: LONG_LABEL, group: 'One' }, { id: 'b', label: 'B', group: 'Two' }]));
   assert.equal(svg.match(/<title/g).length, 1);
@@ -143,7 +151,8 @@ test('roadmap labels and details wrap inside the 892px column', () => {
   const [labelBlock, detailBlock] = textBlocks(svg).filter(block => block.size === 16 || block.size === 13).slice(0, 2);
   assert.equal(labelBlock.lines.length, 2);
   assert.equal(detailBlock.lines.length, 2);
-  for (const line of [...labelBlock.lines, ...detailBlock.lines]) assert.ok(rightEdge(line, 8.9) <= 1050 + 0.5 || line.content.length * 7.2 + line.x <= 1050, line.content);
+  for (const line of labelBlock.lines) assert.ok(rightEdge(line, 8.9) <= 1050, line.content);
+  for (const line of detailBlock.lines) assert.ok(rightEdge(line, 7.2) <= 1050, line.content);
   const circleYs = [...svg.matchAll(/<circle cx="126" cy="([\d.]+)"/g)].map(match => Number(match[1]));
   assert.equal(circleYs[1] - circleYs[0], 47 + 20 + 17);
 });
