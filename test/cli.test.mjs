@@ -147,3 +147,26 @@ test('reads the model from stdin and writes the artifact to stdout', () => {
   assert.match(svg.stdout, /^<svg/);
   assert.equal(runCli(['check', '-'], { input: JSON.stringify(model) }).status, 0);
 });
+
+test('CLI writes native SVG output when requested', () => {
+  const { directory } = makeWorkspace();
+  const output = join(directory, 'demo.svg');
+  const result = runCli(['render', fileURLToPath(new URL('../examples/product-architecture.json', import.meta.url)), output, '--theme', 'ocean']);
+  assert.equal(result.status, 0);
+  assert.match(readFileSync(output, 'utf8'), /^<svg/);
+});
+
+test('check reports a nonexistent input file and exits 1', () => {
+  const missingPath = join(makeWorkspace().directory, 'missing.json');
+  const result = runCli(['check', missingPath]);
+  assert.equal(result.status, 1);
+  assert.ok(result.stderr.includes(missingPath), result.stderr);
+});
+
+test('check lists a missing title and an unknown type in order and exits 1', () => {
+  const result = runCli(['check', '-'], { input: JSON.stringify({ type: 'bogus' }) });
+  assert.equal(result.status, 1);
+  const lines = result.stderr.trim().split('\n');
+  assert.match(lines[0], /^✗ Unsupported type "bogus"\. Supported: architecture, /);
+  assert.equal(lines[1], '✗ A title is required.');
+});

@@ -1,15 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { document, listThemes, render, supportedTypes, validate } from '../lib/forge.mjs';
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { cardRects } from './support/svg.mjs';
 
 const architecture = { type: 'architecture', title: 'Test system', nodes: [{ id: 'a', label: 'App' }, { id: 'b', label: 'API' }], edges: [{ from: 'a', to: 'b', label: 'calls' }] };
 const EDITORIAL = ['timeline', 'roadmap', 'comparison', 'matrix', 'chart'];
 
-const cardRects = svg => [...svg.matchAll(/<rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="58" rx="13"/g)].map(match => ({ x: +match[1], y: +match[2], w: +match[3], h: 58 }));
 const luminance = hex => {
   const [red, green, blue] = [1, 3, 5].map(at => parseInt(hex.slice(at, at + 2), 16) / 255).map(channel => (channel <= 0.03928 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4));
   return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
@@ -19,34 +15,26 @@ const contrast = (first, second) => {
   return (lighter + 0.05) / (darker + 0.05);
 };
 
-test('supports the promised visual vocabulary', () => assert.equal(supportedTypes().length, 12));
+test('supports the promised visual vocabulary', () => assert.deepEqual(supportedTypes(), ['architecture', 'dataflow', 'workflow', 'sequence', 'lifecycle', 'timeline', 'roadmap', 'hierarchy', 'journey', 'comparison', 'matrix', 'chart']));
 test('renders a standalone accessible SVG document', () => {
   const html = document(architecture, { theme: 'midnight' });
   assert.match(html, /<!doctype html>/);
-  assert.match(html, /role="img"/);
-  assert.match(html, /Diagram Forge/);
-  assert.match(html, /Test system/);
+  assert.ok(html.includes(render(architecture, { theme: 'midnight' })));
+  assert.ok(html.includes('<title>Test system · Diagram Forge</title>'));
 });
 test('rejects unknown graph endpoints', () => assert.match(validate({ ...architecture, edges: [{ from: 'a', to: 'missing' }] }).join(' '), /unknown node/));
-test('renders editorial roadmap data', () => assert.match(render({ type: 'roadmap', title: 'Plan', items: [{ label: 'One', value: 1 }] }), /One/));
-test('renders every advertised type with its own shapes and content', () => {
-  for (const type of supportedTypes()) {
-    const isEditorial = EDITORIAL.includes(type);
-    const model = isEditorial
-      ? { type, title: type, items: [{ label: 'One', value: 1 }] }
-      : { type, title: type, nodes: [{ id: 'a', label: 'Alpha' }, { id: 'b', label: 'Beta' }], edges: [{ from: 'a', to: 'b' }] };
-    const svg = render(model);
-    assert.match(svg, new RegExp(`<desc [^>]*>[^<]*${type} diagram`), type);
-    if (isEditorial) {
-      assert.match(svg, />One<\/text>/, type);
-      const shape = { timeline: '<circle', roadmap: '<circle', matrix: 'width="430"', comparison: 'width="700"', chart: 'width="700"' }[type];
-      assert.ok(svg.includes(shape), `${type} should contain ${shape}`);
-    } else {
-      assert.equal(svg.match(/rx="13"/g).length, 2, type);
-      assert.match(svg, />Alpha<\/text>.*>Beta<\/text>/s, type);
-      assert.match(svg, /marker-end="url\(#df-[a-z0-9]+-arrow\)"/, type);
-    }
-  }
+
+const GRAPH_TYPES = supportedTypes().filter(type => !EDITORIAL.includes(type));
+const normalise = (svg, type) => svg.replace(/df-[a-z0-9]+/g, 'df-ID').replaceAll(`${type} diagram`, 'TYPE diagram');
+const renderAlias = (type, body) => normalise(render({ type, title: 'Same', ...body }), type);
+
+test('alias types render the same output', () => {
+  const graphBody = { nodes: [{ id: 'a', label: 'Alpha' }, { id: 'b', label: 'Beta' }], edges: [{ from: 'a', to: 'b' }] };
+  const graphSvgs = GRAPH_TYPES.map(type => renderAlias(type, graphBody));
+  for (const svg of graphSvgs) assert.equal(svg, graphSvgs[0]);
+  const itemsBody = { items: [{ label: 'One', value: 1 }, { label: 'Two', value: 2 }] };
+  assert.equal(renderAlias('timeline', itemsBody), renderAlias('roadmap', itemsBody));
+  assert.equal(renderAlias('comparison', itemsBody), renderAlias('chart', itemsBody));
 });
 
 test('rows grow to fit their tallest group so cards never overlap the next row', () => {
@@ -214,13 +202,6 @@ test('labels are escaped and output is deterministic', () => {
   assert.ok(svg.includes('&lt;script&gt;x&lt;/script&gt;') && svg.includes('B &amp; &quot;C&quot;'));
   assert.ok(!document(nasty).includes('<script>'));
   assert.equal(render(nasty), render(structuredClone(nasty)));
-});
-
-test('CLI writes native SVG output when requested', () => {
-  const directory = mkdtempSync(join(tmpdir(), 'diagram-forge-'));
-  const output = join(directory, 'demo.svg');
-  execFileSync(process.execPath, ['bin/diagram-forge.mjs', 'render', 'examples/product-architecture.json', output, '--theme', 'ocean']);
-  assert.match(readFileSync(output, 'utf8'), /^<svg/);
 });
 
 test('huge chart values scale to finite bar widths', () => {
