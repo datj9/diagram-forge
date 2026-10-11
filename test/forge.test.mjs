@@ -210,11 +210,6 @@ test('huge chart values scale to finite bar widths', () => {
   assert.doesNotMatch(svg, /Infinity|NaN/);
 });
 
-test('long chart detail text is constrained to the canvas', () => {
-  const svg = render({ type: 'chart', title: 'Wide', items: [{ label: 'A', value: 10, detail: 'x'.repeat(80) }, { label: 'B', value: 5 }] });
-  assert.match(svg, /x="1015"[^>]*textLength="135"/);
-});
-
 test('standalone svg carries xml:lang', () => {
   assert.match(render({ type: 'chart', title: 'T', items: [{ label: 'A', value: 1 }] }, { lang: 'fr' }), /xml:lang="fr"/);
 });

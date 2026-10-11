@@ -22,6 +22,11 @@
       "id": "d",
       "label": "Ok",
       "group": "Close"
+    },
+    {
+      "id": "e",
+      "label": "Settlement reconciliation, ledger posting, regulatory reporting and archival of every completed payment batch overnight",
+      "group": "Close"
     }
   ],
   "edges": [
@@ -39,6 +44,11 @@
       "from": "c",
       "to": "d",
       "label": "done"
+    },
+    {
+      "from": "d",
+      "to": "e",
+      "label": "archive"
     }
   ]
 }
