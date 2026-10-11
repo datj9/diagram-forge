@@ -143,10 +143,17 @@ Node >= 20. Zero runtime dependencies. MIT licensed.
 
 ## Contributing
 
-`npm test` compares every render byte-for-byte against `test/golden/`. After an
-intentional output change, run `npm run test:update-golden`, review the diff, and
-regenerate the two gallery SVGs. A CI workflow draft lives in `docs/ci/test.yml`;
-copy it to `.github/workflows/test.yml` to enable it.
+`npm test` compares 21 pinned renders byte-for-byte against `test/golden/`. After
+an intentional output change, run `npm run test:update-golden`, review the diff, and
+regenerate the two gallery SVGs:
+
+```bash
+node bin/diagram-forge.mjs render examples/product-architecture.json docs/gallery/product-architecture.svg --theme midnight --force
+node bin/diagram-forge.mjs render examples/launch-roadmap.json docs/gallery/launch-roadmap.svg --theme ocean --force
+```
+
+A CI workflow draft lives in `docs/ci/test.yml`; copy it to
+`.github/workflows/test.yml` to enable it.
 
 ## License and provenance
 
