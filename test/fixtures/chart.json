@@ -30,7 +30,8 @@
     },
     {
       "label": "Mail",
-      "value": 31
+      "value": 1e+308,
+      "detail": "zzzzzzzzzzzzzzzzzz"
     },
     {
       "label": "Auth",

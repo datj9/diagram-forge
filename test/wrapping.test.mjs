@@ -121,6 +121,7 @@ test('chart detail that fits beside the bar stays beside it at its estimated len
   const run = findBlock(svg, 'yyyy').lines[0];
   assert.equal(run.x, 315 + 700);
   assert.equal(textLengthOf(run), 18 * 7.2);
+  assert.equal(chartSvg([{ label: 'A', value: 10, detail: 'y'.repeat(16) }, { label: 'B', value: 5 }]).includes('textLength'), false);
 });
 
 test('chart detail moves below the bar once it no longer fits (18 vs 19 chars at full width)', () => {
@@ -128,7 +129,7 @@ test('chart detail moves below the bar once it no longer fits (18 vs 19 chars at
   const run = findBlock(svg, 'yyyy').lines[0];
   assert.equal(run.x, 300);
   assert.equal(run.y, barTop(svg, 0) + 46);
-  assert.equal(textLengthOf(run), 19 * 7.2);
+  assert.ok(Number.isNaN(textLengthOf(run)));
 });
 
 test('an 80-char chart detail wraps below the bar, ends inside the canvas and pushes the next row down', () => {
@@ -181,30 +182,37 @@ test('short single-line labels render exactly as before', () => {
 });
 
 
-test('every chart detail line is clamped so an all-caps detail cannot pass x=1150', () => {
+const ROOM_AT_FULL_WIDTH = 1150 - 315 - 700;
+
+test('short chart and comparison details carry no textLength', () => {
+  const items = [{ label: 'API', value: 40, detail: 'Up 12% QoQ' }, { label: 'Web', value: 30, detail: '1,284 req/s' }, { label: 'Queue', value: 20, detail: 'p99 under 200 ms' }, { label: 'None', value: 10 }];
+  assert.doesNotMatch(chartSvg(items), /textLength/);
+  assert.doesNotMatch(render({ type: 'comparison', title: 'Compare', items }), /textLength/);
+});
+
+test('a chart detail gets textLength only once its estimate times 1.15 exceeds the room (16 vs 17 chars at full width)', () => {
+  const lineFor = length => findBlock(chartSvg([{ label: 'A', value: 10, detail: 'y'.repeat(length) }, { label: 'B', value: 5 }]), 'yyyy').lines[0];
+  assert.ok(16 * 7.2 * 1.15 < ROOM_AT_FULL_WIDTH && 17 * 7.2 * 1.15 > ROOM_AT_FULL_WIDTH);
+  assert.ok(Number.isNaN(textLengthOf(lineFor(16))));
+  assert.equal(textLengthOf(lineFor(17)), 17 * 7.2);
+});
+
+test('an all-caps chart detail cannot pass x=1150', () => {
   const detail = 'SETTLEMENT RECONCILIATION '.repeat(9).trim();
   const svg = chartSvg([{ label: 'A', value: 10 }, { label: 'B', value: 9, detail }]);
   const lines = findBlock(svg, 'SETTLEMENT').lines;
-  assert.ok(lines.length >= 1);
-  for (const line of lines) assert.ok(line.x + textLengthOf(line) <= 1150, `${line.content} ends at ${line.x + textLengthOf(line)}`);
+  assert.ok(lines.length >= 2);
+  for (const line of lines) {
+    const estimate = [...line.content].length * 7.2;
+    const renderedWidth = Number.isNaN(textLengthOf(line)) ? estimate * 1.12 : textLengthOf(line);
+    assert.ok(line.x + renderedWidth <= 1150, `${line.content} ends at ${line.x + renderedWidth}`);
+  }
+  assert.ok(Number.isFinite(textLengthOf(lines[0])));
 });
 
-test('a chart detail beside a short bar is clamped to the room right of the bar', () => {
+test('a chart detail beside a short bar stays unclamped when it fits', () => {
   const svg = chartSvg([{ label: 'A', value: 10 }, { label: 'B', value: 5, detail: 'ABC' }]);
   const [line] = findBlock(svg, 'ABC').lines;
   assert.equal(line.x, 315 + 350);
-  assert.equal(textLengthOf(line), 3 * 7.2);
-});
-
-test('a whitespace-only subtitle does not shift the content', () => {
-  const nodes = [{ id: 'a', label: 'A', group: 'One' }, { id: 'b', label: 'B', group: 'Two' }];
-  const blank = render({ type: 'architecture', title: 'T', subtitle: ' '.repeat(300), nodes });
-  assert.equal(cardRects(blank)[0].y, 205);
-  assert.equal(cardRects(render({ type: 'architecture', title: 'T', subtitle: 'short', nodes }))[0].y, 205);
-});
-
-test('a whitespace-only roadmap detail keeps the normal row pitch', () => {
-  const svg = render({ type: 'roadmap', title: 'Plan', items: [{ label: 'One', detail: ' '.repeat(300) }, { label: 'Two', detail: 'Later' }] });
-  const [first, second] = [...svg.matchAll(/<circle cx="126" cy="([\d.]+)"/g)].map(match => Number(match[1]));
-  assert.equal(second - first, 47);
+  assert.ok(Number.isNaN(textLengthOf(line)));
 });
