@@ -22,6 +22,7 @@ function textBlocks(svg) {
 }
 const allLines = svg => textBlocks(svg).flatMap(block => block.lines.map(line => ({ ...line, size: block.size })));
 const rightEdge = (line, pxPerChar) => line.x + [...line.content].length * pxPerChar;
+const textLengthOf = line => Number(line.attributes.match(/textLength="([\d.]+)"/)?.[1]);
 const findBlock = (svg, text) => textBlocks(svg).find(block => block.lines.some(line => line.content.includes(text)));
 
 test('a 52-char card label wraps into two lines inside a taller card', () => {
@@ -107,11 +108,11 @@ test('a long subtitle wraps to two lines and shifts the content', () => {
 const chartSvg = items => render({ type: 'chart', title: 'Chart', items });
 const barTop = (svg, index) => Number(svg.match(/<rect x="300" y="([\d.]+)"/g)[index].match(/y="([\d.]+)"/)[1]);
 
-test('chart detail that fits beside the bar stays beside it without textLength', () => {
+test('chart detail that fits beside the bar stays beside it at its estimated length', () => {
   const svg = chartSvg([{ label: 'A', value: 10, detail: 'y'.repeat(18) }, { label: 'B', value: 5 }]);
   const run = findBlock(svg, 'yyyy').lines[0];
   assert.equal(run.x, 315 + 700);
-  assert.doesNotMatch(svg, /textLength/);
+  assert.equal(textLengthOf(run), 18 * 7.2);
 });
 
 test('chart detail moves below the bar once it no longer fits (18 vs 19 chars at full width)', () => {
@@ -119,7 +120,7 @@ test('chart detail moves below the bar once it no longer fits (18 vs 19 chars at
   const run = findBlock(svg, 'yyyy').lines[0];
   assert.equal(run.x, 300);
   assert.equal(run.y, barTop(svg, 0) + 46);
-  assert.doesNotMatch(svg, /textLength/);
+  assert.equal(textLengthOf(run), 19 * 7.2);
 });
 
 test('an 80-char chart detail wraps below the bar, ends inside the canvas and pushes the next row down', () => {
@@ -162,4 +163,20 @@ test('matrix text stays inside its card and long labels are limited to two lines
 test('short single-line labels render exactly as before', () => {
   const svg = render(graphModel([{ id: 'a', label: 'Web App', group: 'One' }, { id: 'b', label: 'API', group: 'Two' }]));
   assert.match(svg, /<text x="125" y="\d+" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="#17211d" font-weight="700" textLength="58.1" lengthAdjust="spacingAndGlyphs">Web App<\/text>/);
+});
+
+
+test('every chart detail line is clamped so an all-caps detail cannot pass x=1150', () => {
+  const detail = 'SETTLEMENT RECONCILIATION '.repeat(9).trim();
+  const svg = chartSvg([{ label: 'A', value: 10 }, { label: 'B', value: 9, detail }]);
+  const lines = findBlock(svg, 'SETTLEMENT').lines;
+  assert.ok(lines.length >= 1);
+  for (const line of lines) assert.ok(line.x + textLengthOf(line) <= 1150, `${line.content} ends at ${line.x + textLengthOf(line)}`);
+});
+
+test('a chart detail beside a short bar is clamped to the room right of the bar', () => {
+  const svg = chartSvg([{ label: 'A', value: 10 }, { label: 'B', value: 5, detail: 'ABC' }]);
+  const [line] = findBlock(svg, 'ABC').lines;
+  assert.equal(line.x, 315 + 350);
+  assert.equal(textLengthOf(line), 3 * 7.2);
 });
