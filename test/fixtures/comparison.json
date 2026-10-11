@@ -1,0 +1,23 @@
+{
+  "type": "comparison",
+  "title": "Option comparison & trade-offs",
+  "subtitle": "Owner's scores",
+  "series": [
+    {
+      "label": "A",
+      "value": 0
+    },
+    {
+      "label": "Owner's plan",
+      "value": 42,
+      "detail": "best & cheapest"
+    },
+    {
+      "label": "No score yet"
+    },
+    {
+      "label": "R&D track",
+      "value": 17
+    }
+  ]
+}

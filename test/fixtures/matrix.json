@@ -1,0 +1,27 @@
+{
+  "type": "matrix",
+  "title": "Quarterly platform reliability and delivery review across every regional business unit",
+  "subtitle": "Owner's quadrants & risks",
+  "items": [
+    {
+      "label": "Quick wins",
+      "detail": "Low effort"
+    },
+    {
+      "label": "Owner's bets",
+      "detail": "High effort & high reward, to be decided with the whole leadership group before the planning cycle closes next quarter"
+    },
+    {
+      "label": "R&D",
+      "detail": "Explore"
+    },
+    {
+      "label": "Fill-ins",
+      "detail": "Later"
+    },
+    {
+      "label": "UI",
+      "detail": "Skip"
+    }
+  ]
+}

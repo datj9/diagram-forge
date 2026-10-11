@@ -15,6 +15,7 @@
   "files": ["bin", "lib", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
   "scripts": {
     "test": "node --test",
+    "test:update-golden": "UPDATE_GOLDEN=1 node --test test/golden.test.mjs",
     "prepublishOnly": "npm test",
     "render:demo": "node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.html --theme midnight",
     "check": "node bin/diagram-forge.mjs check examples/product-architecture.json"

@@ -1,0 +1,44 @@
+{
+  "type": "workflow",
+  "title": "Release & approval workflow",
+  "subtitle": "Owner's checklist",
+  "nodes": [
+    {
+      "id": "s1",
+      "label": "Draft",
+      "group": "Steps"
+    },
+    {
+      "id": "s2",
+      "label": "Review",
+      "group": "Steps"
+    },
+    {
+      "id": "s3",
+      "label": "Sign-off",
+      "group": "Steps"
+    },
+    {
+      "id": "ok",
+      "label": "OK",
+      "group": "Done"
+    }
+  ],
+  "edges": [
+    {
+      "from": "s1",
+      "to": "s2",
+      "label": "submit"
+    },
+    {
+      "from": "s1",
+      "to": "s3",
+      "label": "fast & loose"
+    },
+    {
+      "from": "s3",
+      "to": "ok",
+      "label": "ship"
+    }
+  ]
+}

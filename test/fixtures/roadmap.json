@@ -1,0 +1,19 @@
+{
+  "type": "roadmap",
+  "title": "Roadmap & priorities",
+  "subtitle": "Owner's plan",
+  "items": [
+    {
+      "label": "Q1",
+      "detail": "Owner's foundation work: stabilise the platform & retire the legacy batch jobs before any new feature work starts here."
+    },
+    {
+      "label": "Q2 growth",
+      "detail": "Scale out"
+    },
+    {
+      "label": "R&D",
+      "detail": "Explore"
+    }
+  ]
+}

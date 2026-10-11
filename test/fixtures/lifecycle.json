@@ -1,0 +1,44 @@
+{
+  "type": "lifecycle",
+  "title": "Payment lifecycle",
+  "subtitle": "Owner's R&D states",
+  "nodes": [
+    {
+      "id": "a",
+      "label": "Payment authorisation and fraud scoring orchestrator",
+      "group": "Auth"
+    },
+    {
+      "id": "b",
+      "label": "Owner's queue",
+      "group": "Settle"
+    },
+    {
+      "id": "c",
+      "label": "R&D",
+      "group": "Settle"
+    },
+    {
+      "id": "d",
+      "label": "Ok",
+      "group": "Close"
+    }
+  ],
+  "edges": [
+    {
+      "from": "a",
+      "to": "b",
+      "label": "approved"
+    },
+    {
+      "from": "b",
+      "to": "c",
+      "label": "batch"
+    },
+    {
+      "from": "c",
+      "to": "d",
+      "label": "done"
+    }
+  ]
+}
