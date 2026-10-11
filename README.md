@@ -40,6 +40,10 @@ it does, it does predictably.
 - **Editorial** (5): `timeline`, `roadmap`, `comparison`, `matrix`, `chart` —
   timeline dots, matrix cards, or horizontal value bars.
 
+Several of the 12 types currently share a layout and differ mainly in naming and
+validation, not in visual treatment (tracked in
+[#16](https://github.com/datj9/diagram-forge/issues/16)).
+
 **Four themes** tuned for slides and docs, light and dark: `paper`, `midnight`,
 `ocean`, `ember`.
 
@@ -76,6 +80,19 @@ node bin/diagram-forge.mjs check examples/product-architecture.json
 npm test
 ```
 
+CLI behavior:
+
+- `--help` and `--version` print usage and the package version.
+- Use `-` as the input to read the model from stdin, or as the output to write
+  to stdout.
+- Output files must end in `.html` or `.svg`; anything else is rejected.
+- An existing output file is not overwritten unless you pass `--force`.
+- Unknown `--theme` values are rejected (valid: `paper`, `midnight`, `ocean`,
+  `ember`).
+
+The library is importable too: `import { validate, render, document,
+supportedTypes, listThemes } from 'diagram-forge'`.
+
 ## The model
 
 ```json
@@ -84,8 +101,8 @@ npm test
   "title": "Checkout platform",
   "subtitle": "One canonical model, many visual treatments",
   "nodes": [
-    { "id": "web", "label": "Web app", "group": "Experience", "kind": "app" },
-    { "id": "api", "label": "Checkout API", "group": "Platform", "kind": "service" }
+    { "id": "web", "label": "Web app", "group": "Experience" },
+    { "id": "api", "label": "Checkout API", "group": "Platform" }
   ],
   "edges": [{ "from": "web", "to": "api", "label": "HTTPS" }]
 }
@@ -93,6 +110,10 @@ npm test
 
 Graph types share the canonical `nodes` / `edges` model. Editorial types use
 `items`, `series`, or `rows` instead. See [`examples/`](examples).
+
+`timeline`, `roadmap`, `comparison`, `matrix`, and `chart` accept at most 10
+items; more than that is rejected with a validation error rather than squeezed
+onto the canvas.
 
 ## Product architecture
 
@@ -122,10 +143,10 @@ Node >= 20. Zero runtime dependencies. MIT licensed.
 
 ## License and provenance
 
-Diagram Forge was built after acquiring copies of and studying the MIT-licensed
+Diagram Forge is inspired by the MIT-licensed
 [Diagram Design](https://github.com/cathrynlavery/diagram-design) and
-[Archify](https://github.com/tt-a1i/archify) projects. They informed its product
-direction; this repository is an original implementation.
+[Archify](https://github.com/tt-a1i/archify) projects, which informed its product
+direction. This repository is an original implementation; no code was copied.
 
 MIT. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for the open-source
 projects that informed the product direction.
