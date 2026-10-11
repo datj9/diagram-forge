@@ -2,12 +2,14 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { document, listThemes, render, supportedTypes } from '../lib/forge.mjs';
 
 const root = relative => new URL(relative, import.meta.url);
 const readJson = relative => JSON.parse(readFileSync(root(relative), 'utf8'));
-const cliPath = root('../bin/diagram-forge.mjs').pathname;
+const cliPath = fileURLToPath(root('../bin/diagram-forge.mjs'));
 const shouldUpdate = process.env.UPDATE_GOLDEN === '1';
+if (shouldUpdate && process.env.CI) throw new Error('UPDATE_GOLDEN must not run in CI');
 
 const EXAMPLES = ['product-architecture', 'launch-roadmap'];
 const GALLERY_THEME = { 'product-architecture': 'midnight', 'launch-roadmap': 'ocean' };
@@ -38,13 +40,14 @@ for (const { file, produce } of manifest) {
     if (shouldUpdate) {
       writeFileSync(goldenUrl, actual);
       assert.equal(readFileSync(goldenUrl, 'utf8'), actual);
-      console.log(`updated ${goldenUrl.pathname}`);
+      console.log(`updated ${fileURLToPath(goldenUrl)}`);
       return;
     }
     let expected;
     try {
       expected = readFileSync(goldenUrl, 'utf8');
-    } catch {
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
       assert.fail(`missing golden ${file}; run npm run test:update-golden`);
     }
     if (expected !== actual) assert.fail(`${file} differs from golden: ${describeFirstDifference(expected, actual)}`);
@@ -67,7 +70,7 @@ test('gallery SVGs equal their goldens', () => {
 
 test('CLI output equals library output for every fixture', () => {
   for (const type of supportedTypes()) {
-    const fixturePath = root(`./fixtures/${type}.json`).pathname;
+    const fixturePath = fileURLToPath(root(`./fixtures/${type}.json`));
     const model = readJson(`./fixtures/${type}.json`);
     const svgRun = spawnSync(process.execPath, [cliPath, 'render', fixturePath, '-', '--format', 'svg', '--theme', 'ocean'], { encoding: 'utf8' });
     assert.equal(svgRun.status, 0, `${type}: ${svgRun.stderr}`);
