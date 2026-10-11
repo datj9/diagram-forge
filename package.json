@@ -4,9 +4,18 @@
   "private": false,
   "type": "module",
   "description": "A deterministic, polished diagram compiler for many visual types.",
+  "keywords": ["diagram", "svg", "compiler", "architecture", "roadmap", "timeline", "deterministic", "cli"],
+  "author": "Dat Nguyen",
+  "repository": { "type": "git", "url": "git+https://github.com/datj9/diagram-forge.git" },
+  "bugs": { "url": "https://github.com/datj9/diagram-forge/issues" },
+  "homepage": "https://github.com/datj9/diagram-forge#readme",
+  "main": "./lib/forge.mjs",
+  "exports": { ".": "./lib/forge.mjs", "./package.json": "./package.json" },
   "bin": { "diagram-forge": "./bin/diagram-forge.mjs" },
+  "files": ["bin", "lib", "README.md", "LICENSE", "THIRD_PARTY_NOTICES.md"],
   "scripts": {
     "test": "node --test",
+    "prepublishOnly": "npm test",
     "render:demo": "node bin/diagram-forge.mjs render examples/product-architecture.json dist/product-architecture.html --theme midnight",
     "check": "node bin/diagram-forge.mjs check examples/product-architecture.json"
   },
