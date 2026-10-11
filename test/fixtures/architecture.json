@@ -1,0 +1,54 @@
+{
+  "type": "architecture",
+  "title": "Checkout & payments platform",
+  "subtitle": "Owner's view of the request path",
+  "nodes": [
+    {
+      "id": "web",
+      "label": "Web App",
+      "group": "Experience"
+    },
+    {
+      "id": "ui",
+      "label": "UI",
+      "group": "Experience"
+    },
+    {
+      "id": "gw",
+      "label": "Gateway",
+      "group": "Edge"
+    },
+    {
+      "id": "db",
+      "label": "Postgres",
+      "group": "Data"
+    }
+  ],
+  "edges": [
+    {
+      "from": "web",
+      "to": "gw",
+      "label": "HTTPS"
+    },
+    {
+      "from": "gw",
+      "to": "db",
+      "label": "SQL & cache"
+    },
+    {
+      "from": "web",
+      "to": "db",
+      "label": "direct"
+    },
+    {
+      "from": "db",
+      "to": "web",
+      "label": "owner's sync"
+    },
+    {
+      "from": "web",
+      "to": "ui",
+      "label": "render"
+    }
+  ]
+}

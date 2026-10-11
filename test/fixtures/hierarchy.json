@@ -1,0 +1,49 @@
+{
+  "type": "hierarchy",
+  "title": "Organisation & ownership",
+  "subtitle": "Owner's tree",
+  "nodes": [
+    {
+      "id": "r",
+      "label": "Chief technology office lead",
+      "group": "Executive leadership group"
+    },
+    {
+      "id": "p",
+      "label": "Platform engineering lead team",
+      "group": "Platform engineering group"
+    },
+    {
+      "id": "d",
+      "label": "Data science and analytics hub",
+      "group": "Data science group"
+    },
+    {
+      "id": "q",
+      "label": "Quality assurance and releases",
+      "group": "Quality assurance group"
+    },
+    {
+      "id": "t",
+      "label": "QA",
+      "group": "Quality assurance group"
+    }
+  ],
+  "edges": [
+    {
+      "from": "r",
+      "to": "p",
+      "label": "owns"
+    },
+    {
+      "from": "r",
+      "to": "d",
+      "label": "owns"
+    },
+    {
+      "from": "p",
+      "to": "q",
+      "label": "tests & ships"
+    }
+  ]
+}

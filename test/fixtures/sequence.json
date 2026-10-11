@@ -1,0 +1,42 @@
+{
+  "type": "sequence",
+  "title": "Quarterly platform reliability and delivery review across every regional business unit",
+  "subtitle": "Order & fulfilment",
+  "nodes": [
+    {
+      "id": 0,
+      "label": "Client",
+      "group": "Actors"
+    },
+    {
+      "id": 1,
+      "label": "API",
+      "group": "Actors"
+    },
+    {
+      "id": "sys",
+      "label": "System"
+    },
+    {
+      "id": "x",
+      "label": "Owner's DB",
+      "group": "Storage"
+    }
+  ],
+  "edges": [
+    {
+      "from": 0,
+      "to": 1,
+      "label": "request"
+    },
+    {
+      "from": 1,
+      "to": "sys"
+    },
+    {
+      "from": "sys",
+      "to": "x",
+      "label": "persist & ack"
+    }
+  ]
+}

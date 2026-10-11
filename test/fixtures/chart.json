@@ -1,0 +1,48 @@
+{
+  "type": "chart",
+  "title": "Throughput & capacity",
+  "subtitle": "Owner's units",
+  "items": [
+    {
+      "label": "UI",
+      "value": 5
+    },
+    {
+      "label": "Owner's api",
+      "value": 40,
+      "detail": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    {
+      "label": "R&D",
+      "value": 1e+308
+    },
+    {
+      "label": "Cache",
+      "value": 10
+    },
+    {
+      "label": "Queue",
+      "value": 17
+    },
+    {
+      "label": "Search",
+      "value": 24
+    },
+    {
+      "label": "Mail",
+      "value": 31
+    },
+    {
+      "label": "Auth",
+      "value": 38
+    },
+    {
+      "label": "Billing",
+      "value": 45
+    },
+    {
+      "label": "Reports",
+      "value": 52
+    }
+  ]
+}

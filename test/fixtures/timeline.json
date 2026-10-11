@@ -1,0 +1,23 @@
+{
+  "type": "timeline",
+  "title": "Delivery timeline & milestones",
+  "subtitle": "Owner's dates",
+  "rows": [
+    {
+      "label": "Kick-off",
+      "date": "Jan 2026"
+    },
+    {
+      "label": "Owner's beta",
+      "date": "Mar 2026"
+    },
+    {
+      "label": "R&D",
+      "date": "May 2026"
+    },
+    {
+      "label": "GA",
+      "date": "Sep 2026"
+    }
+  ]
+}

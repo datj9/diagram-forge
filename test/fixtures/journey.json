@@ -1,0 +1,43 @@
+{
+  "type": "journey",
+  "title": "Quarterly platform reliability and delivery review across every regional business unit",
+  "subtitle": "Customer's path & mood",
+  "nodes": [
+    {
+      "id": "a",
+      "label": "漢字ラベル",
+      "group": "Discover"
+    },
+    {
+      "id": "b",
+      "label": "Happy 😀",
+      "group": "Try"
+    },
+    {
+      "id": "c",
+      "label": "Buy",
+      "group": "Keep"
+    },
+    {
+      "id": "d",
+      "label": "Owner's loop",
+      "group": "Keep"
+    }
+  ],
+  "edges": [
+    {
+      "from": "a",
+      "to": "b",
+      "label": "開始"
+    },
+    {
+      "from": "b",
+      "to": "c",
+      "label": "trial & error"
+    },
+    {
+      "from": "c",
+      "to": "d"
+    }
+  ]
+}

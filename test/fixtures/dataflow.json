@@ -1,0 +1,69 @@
+{
+  "type": "dataflow",
+  "title": "Event pipeline",
+  "subtitle": "Six stages & one sink",
+  "nodes": [
+    {
+      "id": "a",
+      "label": "Ingest",
+      "group": "Source"
+    },
+    {
+      "id": "b",
+      "label": "Parse",
+      "group": "Decode"
+    },
+    {
+      "id": "c",
+      "label": "Enrich",
+      "group": "Join"
+    },
+    {
+      "id": "d",
+      "label": "Score",
+      "group": "Model"
+    },
+    {
+      "id": "e",
+      "label": "Store",
+      "group": "Sink"
+    },
+    {
+      "id": "f",
+      "label": "R&D",
+      "group": "Owner's lab"
+    }
+  ],
+  "edges": [
+    {
+      "from": "a",
+      "to": "b",
+      "label": "raw"
+    },
+    {
+      "from": "b",
+      "to": "c",
+      "label": "rows"
+    },
+    {
+      "from": "c",
+      "to": "d",
+      "label": "features"
+    },
+    {
+      "from": "d",
+      "to": "e",
+      "label": "scores"
+    },
+    {
+      "from": "e",
+      "to": "f",
+      "label": "export"
+    },
+    {
+      "from": "f",
+      "to": "a",
+      "label": "feedback"
+    }
+  ]
+}
