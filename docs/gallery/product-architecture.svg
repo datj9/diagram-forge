@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" lang="en" role="img" aria-labelledby="df-ff5sko-title df-ff5sko-desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480" lang="en" xml:lang="en" role="img" aria-labelledby="df-ff5sko-title df-ff5sko-desc">
 <title id="df-ff5sko-title">Checkout platform</title><desc id="df-ff5sko-desc">An evidence-friendly system view with a presentation-grade finish architecture diagram. Nodes: Web app, Mobile app, Checkout API, Risk service, Orders DB, Event stream. Connections: Web app → Checkout API (HTTPS); Mobile app → Checkout API (HTTPS); Checkout API → Risk service (score); Checkout API → Orders DB (write); Checkout API → Event stream (publish).</desc>
 <rect width="1200" height="480" fill="#101716"/><rect x="32" y="28" width="1136" height="424" rx="26" fill="#18211f" stroke="#3c4c46"/>
 <text x="76" y="92" font-family="Georgia, serif" font-size="34" fill="#ecf4ee" font-weight="700">Checkout platform</text>
